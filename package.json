@@ -1,0 +1,21 @@
+{
+  "name": "backend-notes-api",
+  "version": "1.0.0",
+  "description": "A small Express.js backend application implementing CRUD API endpoints for notes.",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "keywords": ["nodejs", "express", "api", "crud", "notes"],
+  "author": "Syed Mudassir Shahab",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
