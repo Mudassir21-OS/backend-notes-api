@@ -1,21 +1,16 @@
 {
   "name": "backend-notes-api",
-  "version": "1.0.0",
-  "description": "A small Express.js backend application implementing CRUD API endpoints for notes.",
+  "version": "2.0.0",
+  "description": "Express.js Notes API with validation layer and JSON file persistence.",
   "main": "src/server.js",
-  "type": "commonjs",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "node src/server.js"
   },
-  "keywords": ["nodejs", "express", "api", "crud", "notes"],
+  "keywords": ["express", "notes", "crud", "validation", "persistence"],
   "author": "Syed Mudassir Shahab",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.19.2",
-    "cors": "^2.8.5"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.4"
+    "express": "^5.1.0"
   }
 }

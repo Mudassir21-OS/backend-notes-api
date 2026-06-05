@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1,
+    "title": "First note",
+    "content": "This note was loaded from the JSON persistence file."
+  },
+  {
+    "id": 2,
+    "title": "Persistent Note",
+    "content": "This note should remain available after the server restarts."
+  }
+]
