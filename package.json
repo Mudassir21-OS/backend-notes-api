@@ -7,10 +7,18 @@
     "start": "node src/server.js",
     "dev": "node src/server.js"
   },
-  "keywords": ["express", "notes", "crud", "validation", "persistence"],
+  "keywords": [
+    "express",
+    "notes",
+    "crud",
+    "validation",
+    "persistence"
+  ],
   "author": "Syed Mudassir Shahab",
   "license": "MIT",
   "dependencies": {
-    "express": "^5.1.0"
+    "dotenv": "^17.4.2",
+    "express": "^5.1.0",
+    "pg": "^8.21.0"
   }
 }

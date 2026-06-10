@@ -136,6 +136,57 @@ It handles:
 - Handling missing files gracefully
 - Recovering from invalid JSON by creating a backup and starting with a clean array
 
+## PostgreSQL Database Setup
+
+This project now includes a PostgreSQL database connection using the `pg` package. The database connection is managed through a connection pool, which allows the Express.js application to communicate with PostgreSQL efficiently.
+
+The database connection module is located at:
+
+```text
+src/db.js
+```
+
+It uses the `DATABASE_URL` environment variable to connect to the PostgreSQL database.
+
+## Environment Variable Configuration
+
+Create a `.env` file in the project root and add the following variable:
+
+```env
+DATABASE_URL=your_postgresql_connection_string
+```
+
+The `.env` file stores private database credentials locally. It is included in `.gitignore` so sensitive information such as the database username, password, and host are not pushed to GitHub.
+
+## Database Health Check Endpoint
+
+A database health check endpoint was added to confirm that the Express application can successfully connect to PostgreSQL.
+
+Endpoint:
+
+```http
+GET /api/db-health
+```
+
+This endpoint runs the following SQL query:
+
+```sql
+SELECT NOW();
+```
+
+If the connection is successful, the endpoint returns a JSON response containing a success message and the current PostgreSQL timestamp.
+
+Example response:
+
+```json
+{
+  "success": true,
+  "message": "Database connection is healthy.",
+  "databaseTime": "2026-06-10T08:37:09.934Z"
+}
+```
+
+
 ## Testing Instructions
 
 Use Thunder Client or Postman to test all endpoints. The file `API_TESTING_GUIDE.md` includes success tests, validation failure tests, not found tests, and persistence verification steps.
