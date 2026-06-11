@@ -198,3 +198,89 @@ Repository link:
 ```text
 https://github.com/Mudassir21-OS/backend-notes-api
 ```
+
+
+## PostgreSQL CRUD Migration Update
+
+This project was migrated from file-based JSON storage to PostgreSQL database storage. The API routes, validation rules, and response formats remain the same, but the storage layer now uses SQL queries instead of reading and writing to JSON files.
+
+### Environment Variables
+
+Create a `.env` file in the root project folder and add the following values:
+
+```env
+DATABASE_URL=your_postgresql_connection_string
+PORT=5000
+```
+
+The `DATABASE_URL` value should contain the PostgreSQL connection string from Neon or another PostgreSQL provider. The real database URL should only be stored inside the `.env` file. The `.env` file should not be uploaded to GitHub because it contains private database credentials.
+
+### Database Setup
+
+Install the required PostgreSQL and environment variable packages:
+
+```bash
+npm install pg dotenv
+```
+
+Create the PostgreSQL `notes` table by running:
+
+```bash
+node setup-db.js
+```
+
+This setup script creates a `notes` table with the following fields:
+
+- `id`
+- `title`
+- `content`
+- `created_at`
+
+### Running the Server
+
+Start the backend server using:
+
+```bash
+node src/server.js
+```
+
+The server runs on:
+
+```text
+http://localhost:5000
+```
+
+The main notes API can be tested using:
+
+```text
+http://localhost:5000/notes
+```
+
+The database health check endpoint can be tested using:
+
+```text
+http://localhost:5000/api/db-health
+```
+
+### Migration from JSON Storage to PostgreSQL
+
+The old implementation used JSON file storage through functions such as `loadNotes()`, `saveNotes()`, and `getNextId()`. These functions loaded notes from a local JSON file, generated the next note ID manually, and saved the updated notes back into the file.
+
+The new implementation uses PostgreSQL through the `pg` package and the `pool.query(...)` method. This means the API now sends SQL queries directly to the PostgreSQL database instead of depending on a JSON file.
+
+The CRUD operations now use SQL commands:
+
+- `INSERT` is used to create a new note.
+- `SELECT` is used to read all notes or one note by ID.
+- `UPDATE` is used to modify an existing note.
+- `DELETE` is used to remove a note.
+
+Parameterized queries such as `$1`, `$2`, and `$3` are used to safely pass user input into SQL statements. This helps prevent SQL injection because user input is treated as data instead of executable SQL code.
+
+### API Behavior
+
+The API behavior remains the same after the migration. Successful create requests return `201 Created`, successful read, update, and delete requests return `200 OK`, validation errors return `400 Bad Request`, and requests for a note ID that does not exist return `404 Not Found`.
+
+### Persistence Verification
+
+Persistence was verified by creating three notes through the API, stopping the server, restarting it, and calling `GET /notes` again. The same notes were still available after the restart, proving that PostgreSQL is now the source of truth instead of temporary memory or JSON file storage.

@@ -1,4 +1,4 @@
-const { loadNotes, saveNotes, getNextId } = require('../storage/notes.storage');
+const pool = require('../db/pool');
 
 function notFoundResponse(res) {
   return res.status(404).json({
@@ -12,11 +12,14 @@ function notFoundResponse(res) {
 
 async function getAllNotes(req, res, next) {
   try {
-    const notes = await loadNotes();
+    const result = await pool.query(
+      'SELECT * FROM notes ORDER BY created_at DESC'
+    );
+
     return res.status(200).json({
       success: true,
-      count: notes.length,
-      data: notes
+      count: result.rows.length,
+      data: result.rows
     });
   } catch (error) {
     return next(error);
@@ -25,16 +28,18 @@ async function getAllNotes(req, res, next) {
 
 async function getNoteById(req, res, next) {
   try {
-    const notes = await loadNotes();
-    const note = notes.find((item) => item.id === req.noteId);
+    const result = await pool.query(
+      'SELECT * FROM notes WHERE id = $1',
+      [req.noteId]
+    );
 
-    if (!note) {
+    if (result.rows.length === 0) {
       return notFoundResponse(res);
     }
 
     return res.status(200).json({
       success: true,
-      data: note
+      data: result.rows[0]
     });
   } catch (error) {
     return next(error);
@@ -43,20 +48,15 @@ async function getNoteById(req, res, next) {
 
 async function createNote(req, res, next) {
   try {
-    const notes = await loadNotes();
-    const newNote = {
-      id: getNextId(notes),
-      title: req.validatedNote.title,
-      content: req.validatedNote.content
-    };
-
-    notes.push(newNote);
-    await saveNotes(notes);
+    const result = await pool.query(
+      'INSERT INTO notes (title, content) VALUES ($1, $2) RETURNING *',
+      [req.validatedNote.title, req.validatedNote.content]
+    );
 
     return res.status(201).json({
       success: true,
       message: 'Note created successfully.',
-      data: newNote
+      data: result.rows[0]
     });
   } catch (error) {
     return next(error);
@@ -65,25 +65,19 @@ async function createNote(req, res, next) {
 
 async function updateNote(req, res, next) {
   try {
-    const notes = await loadNotes();
-    const noteIndex = notes.findIndex((item) => item.id === req.noteId);
+    const result = await pool.query(
+      'UPDATE notes SET title = $1, content = $2 WHERE id = $3 RETURNING *',
+      [req.validatedNote.title, req.validatedNote.content, req.noteId]
+    );
 
-    if (noteIndex === -1) {
+    if (result.rows.length === 0) {
       return notFoundResponse(res);
     }
-
-    notes[noteIndex] = {
-      id: req.noteId,
-      title: req.validatedNote.title,
-      content: req.validatedNote.content
-    };
-
-    await saveNotes(notes);
 
     return res.status(200).json({
       success: true,
       message: 'Note updated successfully.',
-      data: notes[noteIndex]
+      data: result.rows[0]
     });
   } catch (error) {
     return next(error);
@@ -92,15 +86,14 @@ async function updateNote(req, res, next) {
 
 async function deleteNote(req, res, next) {
   try {
-    const notes = await loadNotes();
-    const noteExists = notes.some((item) => item.id === req.noteId);
+    const result = await pool.query(
+      'DELETE FROM notes WHERE id = $1 RETURNING *',
+      [req.noteId]
+    );
 
-    if (!noteExists) {
+    if (result.rows.length === 0) {
       return notFoundResponse(res);
     }
-
-    const filteredNotes = notes.filter((item) => item.id !== req.noteId);
-    await saveNotes(filteredNotes);
 
     return res.status(200).json({
       success: true,
