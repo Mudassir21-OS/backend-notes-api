@@ -284,3 +284,14 @@ The API behavior remains the same after the migration. Successful create request
 ### Persistence Verification
 
 Persistence was verified by creating three notes through the API, stopping the server, restarting it, and calling `GET /notes` again. The same notes were still available after the restart, proving that PostgreSQL is now the source of truth instead of temporary memory or JSON file storage.
+
+
+## Database Relationships & Schema Design
+
+This project now includes a relational database schema for Sohail's core platform model. The schema moves beyond a single `notes` table and introduces three connected tables: `students`, `tasks`, and `submissions`.
+
+The `submissions` table connects students and tasks using foreign keys. This allows the database to track which student submitted which task and the status of each submission.
+
+The schema file is available at `docs/schema.sql`.
+
+The schema includes primary keys, foreign keys, `ON DELETE CASCADE` relationships, and sample data with 3 students, 3 tasks, and 5 submissions.
