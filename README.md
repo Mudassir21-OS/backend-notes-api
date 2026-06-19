@@ -295,3 +295,18 @@ The `submissions` table connects students and tasks using foreign keys. This all
 The schema file is available at `docs/schema.sql`.
 
 The schema includes primary keys, foreign keys, `ON DELETE CASCADE` relationships, and sample data with 3 students, 3 tasks, and 5 submissions.
+
+## SQL JOIN Queries Assignment
+
+This project includes SQL JOIN practice queries under `docs/join-queries.sql`.
+
+The queries demonstrate how related database tables can be combined to produce meaningful results instead of only showing foreign key IDs such as `student_id` and `task_id`.
+
+The assignment includes:
+
+- An INNER JOIN across `students`, `tasks`, and `submissions`
+- A LEFT JOIN with `GROUP BY` and `COUNT` to calculate submissions per student
+- A LEFT JOIN with `IS NULL` to find tasks that have not been submitted by anyone
+- A custom JOIN query to identify pending student submissions
+
+These queries help answer useful platform questions such as which student submitted which task, how many submissions each student has, which tasks are unsubmitted, and which submissions are still pending.
